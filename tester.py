@@ -1,4 +1,5 @@
 import os
+from tqdm import tqdm
 
 import matplotlib.pyplot as plt
 import torch
@@ -29,7 +30,7 @@ exp = args.exp
 node_emb_dim = args.node_dim
 batch_size = 1
 th = 0.64
-plot = True
+plot = False
 
 exp_dir = os.path.join(args.exp_dir, 'checkpoints')
 
@@ -43,7 +44,7 @@ link_predictor.load_state_dict(torch.load(os.path.join(exp_dir, f'link_pred_{arg
 
 pos_preds = []
 neg_preds = []
-for data in valid_loader:
+for data in tqdm(valid_loader):
     edge_index = data.edge_index.to(device)
     emb = data.x.to(device)
     batch_indices = data.batch

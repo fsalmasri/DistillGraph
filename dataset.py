@@ -50,7 +50,28 @@ class MyOwnDataset(Dataset):
     def len(self):
         return len(self.processed_file_names)
 
+
     def get(self, idx):
         data = torch.load(osp.join(self.processed_dir, f'data_{idx}.pt'), weights_only=False)
+
+        # Define the augmentation percentage (1% or 2%)
+        augmentation_factor = 0.15  # Change to 0.02 for 2% augmentation
+
+        # Randomly generate a factor to augment the first four values (x, y, w, h)
+        perturbation = (torch.rand(data.x.shape[0], 4) * 2 - 1) * augmentation_factor
+
+        # print(data.x[0, 0], data.x[0, 0]/100 * 3509)
+        # print(perturbation[0])
+
+        # print(perturbation[:10])
+        # Apply the perturbation: add or subtract a small percentage to the first four columns (x, y, w, h)
+        data.x[:, :4] += perturbation
+
+        # Ensure that values stay within the valid range [0, 1] (normalized range)
+        data.x[:, :4] = data.x[:, :4].clamp(0.0, 100.0)
+
+        # print(data.x[0, 0], data.x[0, 0] / 100 * 3509)
+        # exit()
+
         return data
 
