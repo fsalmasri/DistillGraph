@@ -55,7 +55,13 @@ class MyOwnDataset(Dataset):
     def get(self, idx):
         data = torch.load(osp.join(self.processed_dir, f'data_{idx}.pt'), weights_only=False)
 
-        if random.random() > 0.85:
+
+        # data.x[:, :4] /= 100 # normalize data by removing he 100 multiple
+
+        # data.x[:, 2] = data.x[:, 3] / data.x[:, 2]
+        # data.x = torch.cat((data.x[:, :3], data.x[:, 4:]), dim=1)
+
+        if random.random() > 0.8:
             # Define the augmentation percentage (1% or 2%)
             augmentation_factor = 0.15  # Change to 0.02 for 2% augmentation
 
